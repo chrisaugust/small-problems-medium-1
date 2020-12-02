@@ -16,14 +16,16 @@
 #
 #
 # Data Structures / Type Signature
-# Integer -> Integer
+# Integer -> Array -> Integer
 #
 #
 # Algorithm
-# 0) (number / 10**digits_to_rotate) * 10**digits to rotate gives the unchanged portion of the number
-# 1) number % 10**digits_to_rotate gives the rightmost numbers to rotate
-# 2) call #rotate_array on results from step 1
-# 3) add results of step 0 and step 1 to find the final, rotated result
+# 1) convert integer to a string
+# 2) take string slices to separate left portion (which will remain
+#    unchanged) and right portion (which has the digits to be rotated)
+# 3) rotate the right portion with #rotate_array
+# 4) combine left portion and rotated portion into a single array
+# 5) join the array elements into a string (Array#join('')) and convert to integer
 #
 # Code
 require_relative 'rotation1'
@@ -41,8 +43,10 @@ class Rotation2 < Test::Unit::TestCase
 end
 
 def rotate_rightmost_digits(number, digits_to_rotate)
-  unrotated_portion = (number / 10**digits_to_rotate)*(10**digits_to_rotate) 
-  rightmost_to_rotate = number % 10**digits_to_rotate
-  rotated_digits = rotate_array(rightmost_to_rotate)
-  unrotated_portion + rotated_digits
+  number_arr = number.to_s.split('')
+  leftmost = number_arr[0, number_arr.length - digits_to_rotate]
+  rightmost = number_arr[-digits_to_rotate, digits_to_rotate]
+  rotated = rotate_array(rightmost)
+  result_arr = leftmost + rotated
+  result_arr.join('').to_i
 end
