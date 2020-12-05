@@ -40,10 +40,13 @@
 #
 # Algorithm
 # 1) initialize an empty array  
-# 2) loop n times, adding a string to array
-#     - 1st line is (n-1)/2 spaces + 1 star + (n-1)/2 spaces
-#     - middle line is n stars
-# 3) print array line by line to stdout
+# 2) loop (n/2)+ 1 times to get to the all diamond line, 
+#    adding a string to the array for each loop
+#    num_spaces_before_and_after = (n/2 + 1) - i  where i is the iteration of the loop through the range (1..(n/2 + 1))
+#    num_asterisks = (2 * i) - 1  => [1,3,5,7 ...] with each iteration of the loop
+# 3) add the bottom half of the diamond image by copying 
+#    the lines from step 2 in reverse order (skipping the middle line)
+# 4) print array line by line to stdout
 #
 # Code
 require 'test/unit'
@@ -52,7 +55,8 @@ class Diamonds < Test::Unit::TestCase
   def test_diamonds
     assert_equal(diamonds(1), "*")
     assert_equal(diamonds(3), " * \n***\n * ")
-    # assert_equal(diamonds(5), "  *  \n ** \n***\n ** \n  *  ")
+    assert_equal(diamonds(5), "  *  \n *** \n*****\n *** \n  *  ")
+    assert_equal(diamonds(9), "    *    \n   ***   \n  *****  \n ******* \n*********\n ******* \n  *****  \n   ***   \n    *    ")
   end
 end
 
@@ -62,13 +66,16 @@ def diamonds(n)
   if n == 1
     return "*"
   end
-  
-  (1..((n/2)+1)).each_with_index do |i| 
+
+  midpoint = n/2 + 1  
+  (1..midpoint).each_with_index do |i| 
     arr[i-1] = ""
-    if i <= (n/2) + 1
-      (((n-i)/2)).times { arr[i-1] += " " }
-      ((2*i)-1).times { arr[i-1] += "*" }
-      (((n-i)/2)).times { arr[i-1] += " " }
+    if i < midpoint
+      (midpoint - i).times { arr[i-1] += " " }
+      (2*i - 1).times { arr[i-1] += "*" }
+      (midpoint - i).times { arr[i-1] += " " }
+    else
+      n.times { arr[i-1] += "*" }
     end
   end
 
